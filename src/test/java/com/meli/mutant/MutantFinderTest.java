@@ -3,6 +3,8 @@ package com.meli.mutant;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.sql.SQLException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +13,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import com.meli.mutant.dao.imp.StatsDao;
 import com.meli.mutant.exception.MutantFinderException;
+import com.meli.mutant.infraestructure.imp.AWSProxyDatabaseConnection;
 import com.meli.mutant.service.imp.MutantFinder;
 import com.meli.mutant.util.MatrixUtil;
 
@@ -23,6 +27,10 @@ public class MutantFinderTest {
 
 	@Mock
 	MatrixUtil matrixUtil;
+	@Mock
+	StatsDao statsDao;
+	@Mock
+	AWSProxyDatabaseConnection conn;
 
 	@Before
 	public void setup() {
@@ -30,18 +38,26 @@ public class MutantFinderTest {
 	}
 
 	@Test
-	public void whenDnaSequenceIsMutant() {
+	public void whenDnaSequenceIsMutant() throws ClassNotFoundException, SQLException {
 		String[] dna = { "ATGCGA", "CAGTGC", "TTATGT", "AGAAGG", "CCCCTA", "TCACTG" };
 
+		statsDao.setData(conn);
+		statsDao.setDatabaseConnection(conn.getConnection());
+
 		mutantFinder.setMatrixUtil(new MatrixUtil());
+		mutantFinder.setStatsDao(statsDao);
 		assertTrue(mutantFinder.isMutant(dna));
 	}
 
 	@Test
-	public void whenDnaSequenceIsNoMutant() {
+	public void whenDnaSequenceIsNoMutant() throws ClassNotFoundException, SQLException {
 		String[] dna = { "ATGCGA", "CAGTGC", "TTATTT", "AGACGG", "GCGTCA", "TCACTG" };
 
+		statsDao.setData(conn);
+		statsDao.setDatabaseConnection(conn.getConnection());
+
 		mutantFinder.setMatrixUtil(new MatrixUtil());
+		mutantFinder.setStatsDao(statsDao);
 		assertFalse(mutantFinder.isMutant(dna));
 	}
 

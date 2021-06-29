@@ -15,7 +15,7 @@ Resources:
       Runtime: java8
       CodeUri: .
       MemorySize: 512
-      Policies: AWSLambdaBasicExecutionRole
+      Policies: [AWSLambdaBasicExecutionRole, AWSLambdaVPCAccessExecutionRole]
       Timeout: 30
       Events:
         HttpApiEvent:
@@ -23,6 +23,13 @@ Resources:
           Properties:
             TimeoutInMillis: 20000
             PayloadFormatVersion: '1.0'
+      VpcConfig:
+        SecurityGroupIds:
+          - sg-420cec3c
+        SubnetIds:
+          - subnet-4ed8a502
+          - subnet-33cf1058
+          - subnet-b42a3fce
 
 Outputs:
   SpringMutantFinderApi:

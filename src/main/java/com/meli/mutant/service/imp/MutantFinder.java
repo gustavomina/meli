@@ -1,5 +1,6 @@
 package com.meli.mutant.service.imp;
 
+import java.sql.SQLException;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
@@ -7,13 +8,19 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.meli.mutant.dao.IStatsDao;
 import com.meli.mutant.exception.MutantFinderException;
 import com.meli.mutant.model.DNAString;
 import com.meli.mutant.model.Node;
+import com.meli.mutant.model.Stats;
 import com.meli.mutant.service.IMutantFinder;
 import com.meli.mutant.util.MatrixUtil;
 
 public class MutantFinder implements IMutantFinder {
+
+	// private IDatabaseConnection databaseConnection;
+
+	private IStatsDao statsDao;
 
 	private MatrixUtil matrixUtil;
 
@@ -21,13 +28,18 @@ public class MutantFinder implements IMutantFinder {
 		// Validates the dna string
 		if (!validateDnaString(dna))
 			return false;
-		// Generates the matrix from the String array
-		String[][] matrixDna = MatrixUtil.createMatrixFromStringArray(dna);
 		// get DNA sequences
-		if (getDnaSequences(matrixDna) > 1)
-			return true;
+		return getDnaSequences(dna);
+	}
 
-		return false;
+	@Override
+	public Stats getStats() {
+		try {
+			return statsDao.getStats();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new Stats();
+		}
 	}
 
 	/**
@@ -66,9 +78,13 @@ public class MutantFinder implements IMutantFinder {
 	 * @param matrixDna
 	 * @return
 	 */
-	private int getDnaSequences(String[][] matrixDna) {
+	private boolean getDnaSequences(String[] dna) {
 
 		int totalCount = 0;
+
+		// Generates the matrix from the String array
+		String[][] matrixDna = MatrixUtil.createMatrixFromStringArray(dna);
+
 		// List of visited elements
 		Set<Node> visitedNode = new LinkedHashSet<Node>();
 
@@ -105,7 +121,22 @@ public class MutantFinder implements IMutantFinder {
 				}
 			}
 		}
-		return totalCount;
+
+		try {
+			saveDnaSequence(dna, totalCount);
+		} catch (SQLException e) {
+			throw new MutantFinderException(e.getMessage());
+		}
+
+		if (totalCount > 1)
+			return true;
+
+		return false;
+	}
+
+	private void saveDnaSequence(String[] dna, int totalCount) throws SQLException {
+		// Connection c = databaseConnection.getConnection();
+		statsDao.insertStats(dna, totalCount);
 	}
 
 	/**
@@ -137,6 +168,10 @@ public class MutantFinder implements IMutantFinder {
 
 	public void setMatrixUtil(MatrixUtil matrixUtil) {
 		this.matrixUtil = matrixUtil;
+	}
+
+	public void setStatsDao(IStatsDao statsDao) {
+		this.statsDao = statsDao;
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.meli.mutant.config.imp;
 
 import java.security.Principal;
+import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,17 +35,26 @@ public class MutantFinderController {
 				return new ResponseEntity<String>("Not Mutant", HttpStatus.FORBIDDEN);
 		} catch (MutantFinderException mfe) {
 			return new ResponseEntity<String>(mfe.getErrorMessage(), HttpStatus.BAD_REQUEST);
+		} catch (SQLException sqle) {
+
+			return new ResponseEntity<String>(sqle.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<String>("Ok", HttpStatus.OK);
 	}
 
 	@RequestMapping(path = "/mutant/stats", method = RequestMethod.GET)
-	public ResponseEntity<Stats> mutantStats(Principal principal) {
+	public ResponseEntity<Stats> mutantStats(Principal principal) throws SQLException, Exception {
 
-		Stats stats = new Stats();
-		stats.setCount_human_dna(100);
-		stats.setCount_mutant_dna(40);
-		stats.setRatio(stats.getCount_mutant_dna() / stats.getCount_human_dna());
+		/*
+		 * Stats stats = new Stats(); stats.setCount_human_dna(100);
+		 * stats.setCount_mutant_dna(40); stats.setRatio(stats.getCount_mutant_dna() /
+		 * stats.getCount_human_dna());
+		 */
+
+		Stats stats = mutanFinderConfig.mutantFinderBean().getStats();
 
 		return new ResponseEntity<Stats>(stats, HttpStatus.OK);
 	}

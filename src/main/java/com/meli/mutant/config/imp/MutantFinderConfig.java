@@ -1,5 +1,7 @@
 package com.meli.mutant.config.imp;
 
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,6 +16,10 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import com.meli.mutant.config.IMutantFinderConfig;
+import com.meli.mutant.dao.IStatsDao;
+import com.meli.mutant.dao.imp.StatsDao;
+import com.meli.mutant.infraestructure.IDatabaseConnection;
+import com.meli.mutant.infraestructure.imp.AWSProxyDatabaseConnection;
 import com.meli.mutant.service.IMutantFinder;
 import com.meli.mutant.service.imp.MutantFinder;
 import com.meli.mutant.util.MatrixUtil;
@@ -23,12 +29,27 @@ import com.meli.mutant.util.MatrixUtil;
 public class MutantFinderConfig implements IMutantFinderConfig {
 
 	@Bean
-	public IMutantFinder mutantFinderBean() {
-		System.out.println("Bean IMutantFinder...");
+	public IMutantFinder mutantFinderBean() throws SQLException, Exception {
 		MutantFinder mutant = new MutantFinder();
+
 		mutant.setMatrixUtil(new MatrixUtil());
+		mutant.setStatsDao(statsDaoBean());
 
 		return mutant;
+	}
+
+	@Bean
+	public IDatabaseConnection databaseConnectionBean() {
+		AWSProxyDatabaseConnection databaseConnection = new AWSProxyDatabaseConnection();
+		return databaseConnection;
+	}
+
+	@Bean
+	public IStatsDao statsDaoBean() throws Exception, SQLException {
+		StatsDao statsDao = new StatsDao();
+		statsDao.setDatabaseConnection(databaseConnectionBean().getConnection());
+		statsDao.setData(databaseConnectionBean());
+		return statsDao;
 	}
 
 	/*
