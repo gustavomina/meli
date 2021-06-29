@@ -16,9 +16,4 @@ public class MutantFinderException extends RuntimeException {
 	public String getErrorMessage() {
 		return errorMessage;
 	}
-
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
-
 }

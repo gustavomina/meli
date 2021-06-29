@@ -1,6 +1,7 @@
 package com.meli.mutant;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
@@ -16,6 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import com.meli.mutant.dao.imp.StatsDao;
 import com.meli.mutant.exception.MutantFinderException;
 import com.meli.mutant.infraestructure.imp.AWSProxyDatabaseConnection;
+import com.meli.mutant.model.Stats;
 import com.meli.mutant.service.imp.MutantFinder;
 import com.meli.mutant.util.MatrixUtil;
 
@@ -91,5 +93,18 @@ public class MutantFinderTest {
 
 		mutantFinder.setMatrixUtil(new MatrixUtil());
 		assertFalse(mutantFinder.isMutant(dna));
+	}
+
+	@Test
+	public void getStats() throws ClassNotFoundException, SQLException {
+
+		statsDao.setData(conn);
+		statsDao.setDatabaseConnection(conn.getConnection());
+
+		mutantFinder.setMatrixUtil(new MatrixUtil());
+		mutantFinder.setStatsDao(statsDao);
+
+		Stats stats = mutantFinder.getStats();
+		assertNull(stats);
 	}
 }
