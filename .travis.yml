@@ -5,7 +5,8 @@ language: java
 jdk:
   - openjdk8
 
-script: "mvn cobertura:cobertura"
-
+script: 
+ - mvn clean package
+ - mvn cobertura:cobertura
 after_success:
   - bash <(curl -s https://codecov.io/bash) -t 01b40b5b-fb93-4019-8a24-e764c606d189
