@@ -67,4 +67,10 @@ Test-Automáticos, Code coverage > 80%.
 ## Implementación
 Para la implementación del algoritmo se realizó principalmente la búsqueda haciendo uso de un algoritmo **BFS - Breadth First Search** en el cual se visita un elemento de la matriz y se buscan los elementos adyacentes al mismo, una vez se tienen los elementos adyacentes, se evalúa cada uno y si el carácter de dicho elemento es igual al elemento current, se sigue buscando en los adyacentes al nodo nuevo en la misma dirección, por ejemplo, si estoy evaluando en nodo [0, 0] que tiene la letra A, y el nodo adyacente que se encuentra en la posición [0, 1] (al este), se sigue buscando los nodos adyacentes que se encuentran al este del nodo [0, 1], esta búsqueda termina cuando se encuentra un carácter diferente al carácter evaluado o cuando se encuentran 4 caracteres consecutivos con el mismo valor.
 
-## Tecnologia
+## Tecnología
+- Java 8
+- Spring Framework
+- AWS Lambda Function
+- AWS Proxy RDS
+- AWS RDS
+- AWS API Gateway
