@@ -76,12 +76,12 @@ Para la implementación del algoritmo se realizó principalmente la búsqueda ha
 - AWS API Gateway
 
 ## Modo de uso
-### Pre-Requisotos
+### Pre-Requisitos
 - [AWS CLI](https://aws.amazon.com/cli/)
 - [SAM CLI](https://github.com/awslabs/aws-sam-cli)
 - [Maven](https://maven.apache.org/)
 
-## Despliegue
+### Despliegue
 En una consola navegue hasta la carpeta en la cual se encuentra el proyecto y use SAM CLI para construir el artefacto a desplegar
 
 ```
