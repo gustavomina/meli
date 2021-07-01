@@ -110,7 +110,7 @@ SpringMutantFinderApi - URL for application            https://mf1lb8qbxl.execut
 ## Servicios
 El API desplegado en AWS cuenta con las siguientes rutas:
 
-- [POST](https://mf1lb8qbxl.execute-api.us-east-2.amazonaws.com/mutant), que recibe un json como el siguiente
+- [POST] (https://mf1lb8qbxl.execute-api.us-east-2.amazonaws.com/mutant), que recibe un json como el siguiente
 
    ````
    {
@@ -118,7 +118,7 @@ El API desplegado en AWS cuenta con las siguientes rutas:
    }
    ````
 
-- [GET](https://mf1lb8qbxl.execute-api.us-east-2.amazonaws.com/mutant/stats), que devuelve un json de la forma: 
+- [GET] (https://mf1lb8qbxl.execute-api.us-east-2.amazonaws.com/mutant/stats), que devuelve un json de la forma: 
 
   ````
   {
