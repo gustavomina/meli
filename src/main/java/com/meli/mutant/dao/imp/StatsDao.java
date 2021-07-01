@@ -24,7 +24,11 @@ public class StatsDao implements IStatsDao {
 		if (totalCount > 1)
 			mutant = "Y";
 
-		((AWSProxyDatabaseConnection) data).insertData(getStatement(joinedString, mutant));
+		try {
+			((AWSProxyDatabaseConnection) data).insertData(getStatement(joinedString, mutant));
+		} catch (SQLException e) {
+
+		}
 	}
 
 	@Override

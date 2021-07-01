@@ -52,6 +52,20 @@ public class MutantFinderTest {
 	}
 
 	@Test
+	public void whenDnaSequenceIsNoMutantLonger() throws ClassNotFoundException, SQLException {
+
+		String[] dna = { "ATCGATATGC", "AACTCGTACG", "ATCGAATGGC", "CAATGGGCCA", "GGGTCCCAAA", "GGTTACCATG",
+				"TCAGAATGCA", "CCGTAAAGCC", "CCCGACATGC", "GACAGCTTAC" };
+
+		statsDao.setData(conn);
+		statsDao.setDatabaseConnection(conn.getConnection());
+
+		mutantFinder.setMatrixUtil(new MatrixUtil());
+		mutantFinder.setStatsDao(statsDao);
+		assertFalse(mutantFinder.isMutant(dna));
+	}
+
+	@Test
 	public void whenDnaSequenceIsNoMutant() throws ClassNotFoundException, SQLException {
 		String[] dna = { "ATGCGA", "CAGTGC", "TTATTT", "AGACGG", "GCGTCA", "TCACTG" };
 

@@ -2,9 +2,11 @@ package com.meli.mutant.service.imp;
 
 import java.sql.SQLException;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -80,7 +82,7 @@ public class MutantFinder implements IMutantFinder {
 	 */
 	private boolean getDnaSequences(String[] dna) {
 
-		int totalCount = 0;
+		List<List<Node>> currentDnaString = new ArrayList<>();
 
 		// Generates the matrix from the String array
 		String[][] matrixDna = MatrixUtil.createMatrixFromStringArray(dna);
@@ -113,9 +115,25 @@ public class MutantFinder implements IMutantFinder {
 					// If the adjacent node has the same value than de current node checks
 					// the next adjacent nodes
 					if (currentNode.getValue().equals(adjacentNode.getValue())) {
-						int stringlength = validateStringLength(adjacentNode, matrixDna);
-						if (stringlength >= 4)
-							totalCount++;
+						List<Node> listString = new ArrayList<Node>();
+						listString.add(currentNode);
+						listString.add(adjacentNode);
+						listString = validateStringLength(adjacentNode, matrixDna, listString);
+						if (listString.size() >= 4) {
+							if (currentDnaString.size() == 0)
+								currentDnaString.add(listString);
+							else {
+								// Verifica si ya los nodos retornados se encuentran contados
+								for (List<Node> lista : currentDnaString) {
+									if (!lista.containsAll(listString)) {
+										currentDnaString.add(listString);
+										break;
+									}
+								}
+							}
+						}
+						if (currentDnaString.size() > 1)
+							break;
 					}
 
 				}
@@ -123,12 +141,12 @@ public class MutantFinder implements IMutantFinder {
 		}
 
 		try {
-			saveDnaSequence(dna, totalCount);
+			saveDnaSequence(dna, currentDnaString.size());
 		} catch (SQLException e) {
 			throw new MutantFinderException(e.getMessage());
 		}
 
-		if (totalCount > 1)
+		if (currentDnaString.size() > 1)
 			return true;
 
 		return false;
@@ -147,10 +165,10 @@ public class MutantFinder implements IMutantFinder {
 	 * @return count of consecutive adjacent nodes that have the same value than
 	 *         adjacentNode
 	 */
-	private int validateStringLength(Node adjacentNode, String[][] matrixDna) {
-		int nodeCount = 2;
+	private List<Node> validateStringLength(Node adjacentNode, String[][] matrixDna, List<Node> string) {
 		Node newNode = adjacentNode;
 
+		List<Node> returnList = string;
 		while (true) {
 			Node node = matrixUtil.getNextNodeInLocation(newNode, matrixDna);
 			if (node == null)
@@ -159,11 +177,11 @@ public class MutantFinder implements IMutantFinder {
 			if (!node.getValue().equals(newNode.getValue()))
 				break;
 			else {
-				nodeCount++;
+				returnList.add(node);
 				newNode = node;
 			}
 		}
-		return nodeCount;
+		return returnList;
 	}
 
 	public void setMatrixUtil(MatrixUtil matrixUtil) {

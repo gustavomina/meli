@@ -61,4 +61,9 @@ public class Node {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "([" + getRow() + "," + getCol() + "]) = " + getValue();
+	}
+
 }
