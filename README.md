@@ -74,3 +74,56 @@ Para la implementación del algoritmo se realizó principalmente la búsqueda ha
 - AWS Proxy RDS
 - AWS RDS
 - AWS API Gateway
+
+## Modo de uso
+### Pre-Requisotos
+- [AWS CLI](https://aws.amazon.com/cli/)
+- [SAM CLI](https://github.com/awslabs/aws-sam-cli)
+- [Maven](https://maven.apache.org/)
+
+## Despliegue
+En una consola navegue hasta la carpeta en la cual se encuentra el proyecto y use SAM CLI para construir el artefacto a desplegar
+
+```
+$ sam build
+```
+
+Este comando compila la aplicacion y prepara el paquete de despliegue en el directorio `.aws-sam`.
+
+Para desplegar la aplicacion en su cuenta AWS, puede usar la opcion de despliegue guiado que ofrece SAM CLI y seguir las instrucciones.
+
+```
+$ sam deploy --guided
+```
+
+Una vez el despliegue ha terminado, SAM CLI imprime el resultado en la salida estandar, incluyendo la URL de la aplicacion.
+
+```
+...
+---------------------------------------------------------------------------------------------------------------------
+OutputKey-Description                                  OutputValue
+---------------------------------------------------------------------------------------------------------------------
+SpringMutantFinderApi - URL for application            https://mf1lb8qbxl.execute-api.us-east-2.amazonaws.com/mutant
+---------------------------------------------------------------------------------------------------------------------
+```
+
+## Servicios
+El API desplegado en AWS cuenta con las siguientes rutas:
+
+- POST /mutant , que recibe un json como el siguiente
+
+   ````
+   {
+       "dna" : ["AAAA", "ATCG", "GTCA", "GGGG"]
+   }
+   ````
+
+- GET /mutant/stats , que devuelve un json de la forma: 
+
+  ````
+  {
+      "count_mutant_dna":40, 
+      "count_human_dna":100: 
+      "ratio":0.4
+  }
+  ````
