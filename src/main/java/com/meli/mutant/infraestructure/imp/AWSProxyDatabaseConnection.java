@@ -8,18 +8,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.meli.mutant.infraestructure.IDatabaseConnection;
+import com.meli.mutant.util.io.IMutantFinderProperties;
 
 public class AWSProxyDatabaseConnection implements IDatabaseConnection {
 
-	// Configuration parameters for the generation of the IAM Database
-	// Authentication token
-	private static final String RDS_INSTANCE_HOSTNAME = "mutant-dbproxy-aurora.proxy-cj6kriuhsr7n.us-east-2.rds.amazonaws.com";
-	private static final int RDS_INSTANCE_PORT = 3306;
-	// private static final String REGION_NAME = "us-est-2";
-	private static final String DB_USER = "admin";
-	private static final String DB_PWD = "Djm87v01540295$";
-	private static final String JDBC_URL = "jdbc:mysql://" + RDS_INSTANCE_HOSTNAME + ":" + RDS_INSTANCE_PORT
-			+ "/mutantfinder";
+	// Injection
+	IMutantFinderProperties mutantFinderProperties;
+
 	private static final int MAX_RETRIES = 5;
 
 	@Override
@@ -27,7 +22,9 @@ public class AWSProxyDatabaseConnection implements IDatabaseConnection {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		// Create a connection.
 		System.out.println("Conectando Componente..");
-		Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PWD);
+
+		Connection connection = DriverManager.getConnection(mutantFinderProperties.getJdbc(),
+				mutantFinderProperties.getDbUser(), mutantFinderProperties.getDbPwd());
 		System.out.println("Conectado..");
 		// Configure the connection.
 		setInitialSessionState(connection);
@@ -96,6 +93,10 @@ public class AWSProxyDatabaseConnection implements IDatabaseConnection {
 
 	public void insertData(PreparedStatement insert) throws SQLException {
 		insert.execute();
+	}
+
+	public void setMutantFinderProperties(IMutantFinderProperties mutantFinderProperties) {
+		this.mutantFinderProperties = mutantFinderProperties;
 	}
 
 }

@@ -51,9 +51,9 @@ public class StatsDao implements IStatsDao {
 		stats.setCount_mutant_dna(mutant);
 
 		if (human == 0)
-			stats.setRatio(0F);
-		else
-			stats.setRatio(Float.valueOf(mutant / human).floatValue());
+			human = 1;
+
+		stats.setRatio(Float.valueOf(mutant / human).floatValue());
 
 		return stats;
 	}
