@@ -145,8 +145,6 @@ public class MutantFinderConfig implements IMutantFinderConfig {
 
 		try {
 			configurationFile = configurations.properties(fileBean(pathname));
-			configurationFile.getKeys().forEachRemaining(x -> System.out.println("Key: " + x));
-
 		} catch (ConfigurationException e) {
 			e.printStackTrace();
 			throw new MutantFinderException(e.getMessage());
@@ -160,12 +158,9 @@ public class MutantFinderConfig implements IMutantFinderConfig {
 	@Lazy
 	public URL fileBean(String pathname) {
 
-		System.out.println(pathname);
-
 		URL url = null;
 		try {
 			url = applicationContext.getResource(pathname).getURL();
-			System.out.println(url.getFile() + " --- " + url.getPath());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
